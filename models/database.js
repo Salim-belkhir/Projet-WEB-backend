@@ -14,7 +14,7 @@ function getConnection(){
          host     : 'dokku-mysql-location-bkr',
          user     : 'mysql',
          password : '0156d73fd8bf8fb2',
-         database: '/location_bkr',
+         database: 'location_bkr',
          port : 3306
       })      
    }
