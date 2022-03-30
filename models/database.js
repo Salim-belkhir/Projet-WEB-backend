@@ -9,10 +9,11 @@ function getConnection(){
       // console.log("init connectionPool");
       connectionPool = mysql.createPool({
          connectionLimit: 10,
-         host     : 'localhost',
-         user     : 'salim',
-         password : 'local',
-         database: 'database2'
+         host     : 'dokku-mysql-location-bkr',
+         user     : 'mysql',
+         password : '0156d73fd8bf8fb2',
+         database: '/location_bkr',
+         port : 3306
       })      
    }
    return connectionPool;
