@@ -20,7 +20,7 @@ function getConnection(){
    return connectionPool;
 }
 
-fs.readFile("./database.sql", {encoding: 'utf-8'}, (err, data) => {
+fs.readFile(path.resolve(__dirname, "./database.sql"), {encoding: 'utf-8'}, (err, data) => {
     if(err){
         console.error(err)
     } else {
