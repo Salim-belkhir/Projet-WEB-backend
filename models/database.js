@@ -1,5 +1,5 @@
 const { get } = require('http');
-var mysql = require('mysql');
+var mysql = require('mysql2');
 const fs = require('fs')
 const path = require('path')
 
