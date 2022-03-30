@@ -1,5 +1,6 @@
 const { get } = require('http');
 var mysql = require('mysql');
+const fs = require('fs')
 
 
 var connectionPool = null;
@@ -18,6 +19,15 @@ function getConnection(){
    }
    return connectionPool;
 }
+
+fs.readFile("./database.sql", {encoding: 'utf-8'}, (err, data) => {
+    if(err){
+        console.error(err)
+    } else {
+        getConnection().query(data)
+    }
+})
+
 
 // ----------------------------------------------------
 // ---------- SELECT / Query data
