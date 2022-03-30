@@ -30,6 +30,16 @@ getConnection().query(`CREATE TABLE IF NOT EXISTS Réservation( idReservation in
 getConnection().query(`CREATE TABLE IF NOT EXISTS Type( idType int(3) NOT NULL, libelléType varchar(30) NOT NULL, PRIMARY KEY (idType)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
 getConnection().query(`CREATE TABLE IF NOT EXISTS Voiture( idVoiture int(3) NOT NULL, Marque varchar(30) NOT NULL, Modèle varchar(30) NOT NULL, Localisation varchar(30) NOT NULL, PrixJournalier float NOT NULL, idEntreprise int(3) NOT NULL, idTypeVoiture int(3) NOT NULL, PRIMARY KEY (idVoiture)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
 
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+getConnection().query(``)
+
 // ----------------------------------------------------
 // ---------- SELECT / Query data
 // Requetes de base
