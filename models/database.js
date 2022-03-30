@@ -21,8 +21,14 @@ function getConnection(){
    return connectionPool;
 }
 
-getConnection().query(` CREATE TABLE IF NOT EXISTS Avis( idReservation int(3) NOT NULL, etoiles int(1) NOT NULL, commentaire text NOT NULL, PRIMARY KEY (idReservation)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
-
+getConnection().query(`CREATE TABLE IF NOT EXISTS Avis( idReservation int(3) NOT NULL, etoiles int(1) NOT NULL, commentaire text NOT NULL, PRIMARY KEY (idReservation)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Client( idClient int(3) NOT NULL, nomClient varchar(30) NOT NULL, prenomClient varchar(30) NOT NULL, RueClient varchar(30) NOT NULL, VilleClient varchar(30) NOT NULL, CPClient int(5) NOT NULL, numeroClient varchar(10) NOT NULL, mailClient varchar(50) NOT NULL, password varchar(100) NOT NULL, PRIMARY KEY (idClient), UNIQUE KEY mailClient (mailClient)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Disponibilité( idVoiture int(3) NOT NULL, date_debut date NOT NULL, date_fin date NOT NULL, PRIMARY KEY (idVoiture,date_debut)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Entreprise( idEntreprise int(3) NOT NULL, nom varchar(30) NOT NULL, rueEntreprise varchar(30) NOT NULL, villeEntreprise varchar(30) NOT NULL, CPEntreprise int(5) NOT NULL, numeroEntreprise varchar(10) NOT NULL, mailEntreprise varchar(50) NOT NULL, passwordEntreprise varchar(100) NOT NULL, PRIMARY KEY(idEntreprise), UNIQUE KEY mailEntreprise (mailEntreprise)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; CREATE TABLE IF NOT EXISTS Entreprise( idEntreprise int(3) NOT NULL, nom varchar(30) NOT NULL, rueEntreprise varchar(30) NOT NULL, villeEntreprise varchar(30) NOT NULL, CPEntreprise int(5) NOT NULL, numeroEntreprise varchar(10) NOT NULL, mailEntreprise varchar(50) NOT NULL, passwordEntreprise varchar(100) NOT NULL, PRIMARY KEY(idEntreprise), UNIQUE KEY mailEntreprise (mailEntreprise)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Photo( idVoiture int(11) NOT NULL, url varchar(200) NOT NULL, PRIMARY KEY (idVoiture,url)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Réservation( idReservation int(3) NOT NULL, idVoiture int(3) NOT NULL, idClient int(3) NOT NULL, date_debut date NOT NULL, date_fin date NOT NULL, prixTotal int(5) NOT NULL, PRIMARY KEY (idReservation)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Type( idType int(3) NOT NULL, libelléType varchar(30) NOT NULL, PRIMARY KEY (idType)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
+getConnection().query(`CREATE TABLE IF NOT EXISTS Voiture( idVoiture int(3) NOT NULL, Marque varchar(30) NOT NULL, Modèle varchar(30) NOT NULL, Localisation varchar(30) NOT NULL, PrixJournalier float NOT NULL, idEntreprise int(3) NOT NULL, idTypeVoiture int(3) NOT NULL, PRIMARY KEY (idVoiture)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
 
 // ----------------------------------------------------
 // ---------- SELECT / Query data
