@@ -79,7 +79,7 @@ router.post('/clients', stuffCtrl.addClient);
 router.delete('/clients/:id', stuffCtrl.deleteClient);
 
 //mise à jour des infos d'un client  (PUT)
-router.patch('/clients/:id', stuffCtrl.updateClient)
+router.put('/clients/:id', stuffCtrl.updateClient)
 
 //liste des réservations de voitures d'un client
 //router.get('/clients/reservation', stuffCtrl)

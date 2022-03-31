@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 
 
 exports.getCars = function(req,res){
-    db.queryAll('Voiture',function(result){  //on récupére le tableau de voitures existantes qu'on renvoie directement au frontend
-        let tab = []
+    /*db.queryAll('Voiture',function(result){  //on récupére le tableau de voitures existantes qu'on renvoie directement au frontend
+        /*let tab = []
         for(let i = 0; i<result.length; i++){
             var car = { 
                 idVoiture : result[i].idVoiture, 
@@ -37,15 +37,21 @@ exports.getCars = function(req,res){
             console.log(test)
             
             //console.log(car.images)
-            tab.push(car);
-        }
-        res.send(tab).status(200);
+            tab.push(car);*/
+        //res.send(tab).status(200);
+        /*res.send(result)
+    })*/
+    db.detailsVoiture(function(result){
+        res.send(result)
     })
 };
 
 exports.getCar = function(req, res){
     const id = req.params['id'];
-    db.queryValue('Voiture', 'idVoiture', id, function(result){
+    //db.queryValue('Voiture', 'idVoiture', id, function(result){
+      //  res.send(result).status(200);
+    //})
+    db.voituredetail(id, function(result){
         res.send(result).status(200);
     })
 }
@@ -144,7 +150,8 @@ exports.updateSociety = function(req, res){
     let code = req.body.code;
     let mail = req.body.mail;
     let numero = req.body.numero;
-    db.majSociety(id, nom, rue, ville, code, mail, numero);
+    let password = req.body.password;
+    db.majSociety(id, nom, rue, ville, code, numero, mail, password);
     res.send(201);
 };
 
@@ -193,6 +200,7 @@ exports.deleteClient = function(req, res){
 };
 
 exports.updateClient = function(req, res){
+    console.log(req.body)
     const id = req.params['id'];
     let nom = req.body.nom;
     let prenom = req.body.prenom;
@@ -201,8 +209,9 @@ exports.updateClient = function(req, res){
     let code = req.body.code;
     let mail = req.body.mail;
     let numero = req.body.numero;
-    db.majClient(id, nom, prenom, rue, ville, code, mail, numero);
-    res.send(200)
+    let password = req.body.password;
+    db.majClient(id, nom, prenom, rue, ville, code, mail, numero, password);
+    res.status(200)
 }
 
 
@@ -354,7 +363,7 @@ exports.getReservationsCar = function(req, res){
     const id = req.params.id;
     db.queryValue('Réservation', 'idVoiture', id, function(result){
         res.status(200).send(result);
-    })
+    })    
 }
 
 
@@ -368,7 +377,9 @@ exports.updateReservation = function(req, res){
 };
 
 exports.deleteReservation = function(req, res){
- 
+    const id = req.params.id;
+    db.supReservation(id);
+    res.status(200);
 };  
 
 

@@ -11,34 +11,16 @@ function getConnection(){
       // console.log("init connectionPool");
       connectionPool = mysql.createPool({
          connectionLimit: 10,
-         host     : 'dokku-mysql-location-bkr',
-         user     : 'mysql',
-         password : '0156d73fd8bf8fb2',
-         database: 'location_bkr',
-         port : 3306
+         host     : 'localhost',
+         user     : 'salim',
+         password : 'local',
+         database: 'database2'
       })      
    }
    return connectionPool;
 }
 
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Avis( idReservation int(3) NOT NULL, etoiles int(1) NOT NULL, commentaire text NOT NULL, PRIMARY KEY (idReservation)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Client( idClient int(3) NOT NULL, nomClient varchar(30) NOT NULL, prenomClient varchar(30) NOT NULL, RueClient varchar(30) NOT NULL, VilleClient varchar(30) NOT NULL, CPClient int(5) NOT NULL, numeroClient varchar(10) NOT NULL, mailClient varchar(50) NOT NULL, password varchar(100) NOT NULL, PRIMARY KEY (idClient), UNIQUE KEY mailClient (mailClient)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Disponibilité( idVoiture int(3) NOT NULL, date_debut date NOT NULL, date_fin date NOT NULL, PRIMARY KEY (idVoiture,date_debut)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`)
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Entreprise( idEntreprise int(3) NOT NULL, nom varchar(30) NOT NULL, rueEntreprise varchar(30) NOT NULL, villeEntreprise varchar(30) NOT NULL, CPEntreprise int(5) NOT NULL, numeroEntreprise varchar(10) NOT NULL, mailEntreprise varchar(50) NOT NULL, passwordEntreprise varchar(100) NOT NULL, PRIMARY KEY(idEntreprise), UNIQUE KEY mailEntreprise (mailEntreprise)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; CREATE TABLE IF NOT EXISTS Entreprise( idEntreprise int(3) NOT NULL, nom varchar(30) NOT NULL, rueEntreprise varchar(30) NOT NULL, villeEntreprise varchar(30) NOT NULL, CPEntreprise int(5) NOT NULL, numeroEntreprise varchar(10) NOT NULL, mailEntreprise varchar(50) NOT NULL, passwordEntreprise varchar(100) NOT NULL, PRIMARY KEY(idEntreprise), UNIQUE KEY mailEntreprise (mailEntreprise)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Photo( idVoiture int(11) NOT NULL, url varchar(200) NOT NULL, PRIMARY KEY (idVoiture,url)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Réservation( idReservation int(3) NOT NULL, idVoiture int(3) NOT NULL, idClient int(3) NOT NULL, date_debut date NOT NULL, date_fin date NOT NULL, prixTotal int(5) NOT NULL, PRIMARY KEY (idReservation)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
-getConnection().query(`CREATE TABLE IF NOT EXISTS Type( idType int(3) NOT NULL, libelléType varchar(30) NOT NULL, PRIMARY KEY (idType)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
-//getConnection().query(`CREATE TABLE IF NOT EXISTS Voiture( idVoiture int(3) NOT NULL, Marque varchar(30) NOT NULL, Modèle varchar(30) NOT NULL, Localisation varchar(30) NOT NULL, PrixJournalier float NOT NULL, idEntreprise int(3) NOT NULL, idTypeVoiture int(3) NOT NULL, PRIMARY KEY (idVoiture)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; `)
 
-/*getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)
-getConnection().query(``)*/
 
 // ----------------------------------------------------
 // ---------- SELECT / Query data
@@ -71,10 +53,14 @@ exports.queryValueColumn = function(table,column,property,key,callback){
 
 exports.queryJoin = function(callback){
     this.queryData(`SELECT * FROM Voiture INNER JOIN Disponibilité ON Voiture.idVoiture = Disponibilité.idVoiture;`, callback);
-}
+}  
 
 exports.detailsVoiture = function(callback){
-    this.queryData(`SELECT * FROM Voiture INNER JOIN Photo ON Voiture.idVoiture = Photo.idVoiture;`, callback);
+    this.queryData(`SELECT * FROM Voiture INNER JOIN Type ON Voiture.idTypeVoiture = Type.idType;`, callback);
+}
+
+exports.voituredetail = function(id, callback){
+    this.queryData(`SELECT * FROM Voiture INNER JOIN Type ON Voiture.idTypeVoiture = Type.idType WHERE Voiture.idVoiture = ${id};`, callback);
 }
 
 exports.verifyMail = function(mail, callback){
@@ -186,11 +172,11 @@ exports.ajoutReservation = function(idVoiture, idClient, dateDeb, dateFin, prixT
     getConnection().query(`SELECT MAX(idReservation) AS id FROM Réservation`, function(err, result){
         if(err){ console.log(err)}
         const id = result[0].id + 1;
-        getConnection().query(`INSERT INTO Réservation (idReservation, idVoiture, idClient, date_debut, date_fin, prix) VALUES (${id},${idVoiture}, ${idClient}, "${dateDeb}", "${dateFin}", ${prixTotal});`,function(err, result){
+        getConnection().query(`INSERT INTO Réservation (idReservation, idVoiture, idClient, date_debut, date_fin, prixTotal) VALUES (${id},${idVoiture}, ${idClient}, "${dateDeb}", "${dateFin}", ${prixTotal});`,function(err, result){
             if(err){ console.log(err)}
         })
         //On met a jour les disponibilités de la voiture comme elle est réservée
-        getConnection().query(`SELECT * FROM Disponibilité WHERE idVoiture = ${id} AND date_debut <= "${dateDeb}" AND date_fin >= "${dateFin}";`, function(err, result){
+        /*getConnection().query(`SELECT * FROM Disponibilité WHERE idVoiture = ${id} AND date_debut <= "${dateDeb}" AND date_fin >= "${dateFin}";`, function(err, result){
             if(err) { console.log(err)}
             console.log(result)
             let date1 = result[0].date_debut; 
@@ -205,7 +191,7 @@ exports.ajoutReservation = function(idVoiture, idClient, dateDeb, dateFin, prixT
                     if(err){ console.log(err)}
                 })
             })
-        })
+        })*/
     })
 }
 
@@ -354,24 +340,24 @@ exports.supReservation = function(id){
 
 
 //Update informations d'un client
-exports.majClient = function(id, nom, prenom, rue, ville, CP, numero, mail){
+exports.majClient = function(id, nom, prenom, rue, ville, CP, numero, mail, password){
     if(nom != ""){
-        getConnection().query(`UPDATE Client SET nomClient = ${nom} WHERE idClient = ${id};`, function(err){
+        getConnection().query(`UPDATE Client SET nomClient = "${nom}" WHERE idClient = ${id};`, function(err){
             if(err) {console.log(err)}
         })
     }
     if(prenom != ""){
-        getConnection().query(`UPDATE Client SET prenomClient = ${prenom} WHERE idClient = ${id};`, function(err){
+        getConnection().query(`UPDATE Client SET prenomClient = "${prenom}" WHERE idClient = ${id};`, function(err){
             if(err) {console.log(err)}
         })
     }
     if(rue != ""){
-        getConnection().query(`UPDATE Client SET RueClient = ${rue} WHERE idClient = ${id};`, function(err){
+        getConnection().query(`UPDATE Client SET RueClient = "${rue}" WHERE idClient = ${id};`, function(err){
             if(err) {console.log(err)}
         })
     }
     if(ville != ""){
-        getConnection().query(`UPDATE Client SET VilleClient = ${ville} WHERE idClient = ${id};`, function(err){
+        getConnection().query(`UPDATE Client SET VilleClient = "${ville}" WHERE idClient = ${id};`, function(err){
             if(err) {console.log(err)}
         })
     }
@@ -381,13 +367,18 @@ exports.majClient = function(id, nom, prenom, rue, ville, CP, numero, mail){
         })
     }
     if(nom != ""){
-        getConnection().query(`UPDATE Client SET numeroClient = ${numero} WHERE idClient = ${id};`, function(err){
+        getConnection().query(`UPDATE Client SET numeroClient = "${numero}" WHERE idClient = ${id};`, function(err){
             if(err) {console.log(err)}
         })
     }
     if(mail != ""){
-        getConnection().query(`UPDATE Client SET mailClient = ${mail} WHERE idClient = ${id};`, function(err){
+        getConnection().query(`UPDATE Client SET mailClient = "${mail}" WHERE idClient = ${id};`, function(err){
             if(err) {console.log(err)}
+        })
+    }
+    if(password != ""){
+        getConnection().query(`UPDATE Entreprise SET passwordEntreprise = "${password}" WHERE idEntreprise = ${id}`, function(err){
+            if(err) { console.log(err)}
         })
     }
 }
